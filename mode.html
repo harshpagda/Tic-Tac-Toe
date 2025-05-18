@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tic Tac Toe</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background-color: aquamarine;
+        text-align: center;
+        font-family: Arial, sans-serif;
+      }
+
+      h1 {
+        margin: 20px 0 10px;
+      }
+
+      .scoreboard {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        margin: 10px 0 20px;
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
+
+      .scoreboard span {
+        color: #333;
+      }
+
+      .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        height: 70vh;
+        gap: 10px;
+      }
+
+      .game {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        height: 60vmin;
+        width: 60vmin;
+        gap: 1.5vmin;
+      }
+
+      .box {
+        height: 18vmin;
+        width: 18vmin;
+        background-color: aqua;
+        border-radius: 10px;
+        border: none;
+        box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+        font-size: 10vmin;
+        cursor: pointer;
+      }
+
+      #reset,
+      #newbutton {
+        height: 40px;
+        width: 120px;
+        background-color: #ffd600;
+        color: #222;
+        padding: 10px 0;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.15);
+        margin: 10px;
+      }
+
+      .msg-container {
+        margin: 20px 0;
+      }
+
+      .hide {
+        display: none;
+      }
+    </style>
+
+    <script>
+      // Score variables
+      let player1Score = 0;
+      let player2Score = 0;
+
+      // Wait for DOM to load
+      document.addEventListener("DOMContentLoaded", function () {
+        const boxs = document.querySelectorAll(".box");
+        const reset = document.querySelector("#reset");
+        const msga = document.querySelector("#msg");
+        const msgcon = document.querySelector(".msg-container");
+        const newBtn = document.querySelector("#newbutton");
+
+        const winpatten = [
+          [0, 1, 2],
+          [3, 4, 5],
+          [6, 7, 8],
+          [0, 3, 6],
+          [1, 4, 7],
+          [2, 5, 8],
+          [0, 4, 8],
+          [2, 4, 6],
+        ];
+
+        let turn = true; // true = O (Player 1), false = X (Player 2)
+
+        function updateScoreboard() {
+          document.getElementById("p1score").innerText = player1Score;
+          document.getElementById("p2score").innerText = player2Score;
+        }
+
+        function boxDisable() {
+          boxs.forEach((box) => (box.disabled = true));
+        }
+
+        function boxEnable() {
+          boxs.forEach((box) => {
+            box.disabled = false;
+            box.innerText = "";
+          });
+        }
+
+        function resetGame() {
+          turn = true;
+          msgcon.classList.add("hide");
+          boxEnable();
+        }
+
+        function resetScores() {
+          player1Score = 0;
+          player2Score = 0;
+          updateScoreboard();
+        }
+
+        function winner(value1) {
+          const winnerText = value1 === "o" ? "Player 1" : "Player 2";
+          msga.innerText = `Congratulations, ${winnerText} wins!`;
+          msgcon.classList.remove("hide");
+
+          if (value1 === "o") {
+            player1Score++;
+          } else {
+            player2Score++;
+          }
+          updateScoreboard();
+        }
+
+        function checkWinner() {
+          for (let patten of winpatten) {
+            let [a, b, c] = patten;
+            let val1 = boxs[a].innerText;
+            let val2 = boxs[b].innerText;
+            let val3 = boxs[c].innerText;
+
+            if (val1 && val1 === val2 && val2 === val3) {
+              winner(val1);
+              boxDisable();
+              break;
+            }
+          }
+        }
+
+        boxs.forEach((box) => {
+          box.addEventListener("click", () => {
+            box.innerText = turn ? "o" : "x";
+            box.disabled = true;
+            turn = !turn;
+            checkWinner();
+          });
+        });
+
+        reset.addEventListener("click", resetGame);
+        newBtn.addEventListener("click", () => {
+          resetGame();
+          resetScores();
+        });
+
+        // Initialize scoreboard
+        updateScoreboard();
+      });
+    </script>
+  </head>
+
+  <body>
+    <div class="msg-container hide">
+      <p id="msg">Winner</p>
+      <button id="newbutton">New Game</button>
+    </div>
+
+    <h1>Tic Tac Toe</h1>
+
+    <div class="scoreboard">
+      <span>Player 1 (O): <span id="p1score">0</span></span>
+      <span>Player 2 (X): <span id="p2score">0</span></span>
+    </div>
+
+    <div class="container">
+      <div class="game">
+        <button class="box"></button>
+        <button class="box"></button>
+        <button class="box"></button>
+        <button class="box"></button>
+        <button class="box"></button>
+        <button class="box"></button>
+        <button class="box"></button>
+        <button class="box"></button>
+        <button class="box"></button>
+      </div>
+    </div>
+
+    <button id="reset">Reset</button>
+  </body>
+</html>
